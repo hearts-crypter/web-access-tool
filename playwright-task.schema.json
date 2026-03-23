@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local/playwright-task.schema.json",
+  "title": "Playwright Pipeline Task v1",
+  "type": "object",
+  "required": ["schemaVersion", "actions"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "name": { "type": "string" },
+    "url": { "type": "string", "format": "uri" },
+    "browser": { "type": "string", "enum": ["chromium", "firefox", "webkit"], "default": "chromium" },
+    "headless": { "type": "boolean", "default": true },
+    "timeoutMs": { "type": "integer", "minimum": 1, "default": 30000 },
+    "retries": { "type": "integer", "minimum": 0, "default": 1 },
+    "retryDelayMs": { "type": "integer", "minimum": 0, "default": 500 },
+    "waitUntil": { "type": "string", "enum": ["load", "domcontentloaded", "networkidle", "commit"], "default": "domcontentloaded" },
+    "outputDir": { "type": "string", "default": "scripts/playwright-output" },
+    "allowSideEffects": { "type": "boolean", "default": false },
+    "allowPrivateNetwork": { "type": "boolean", "default": false },
+    "allowedDomains": { "type": "array", "items": { "type": "string" } },
+    "blockedDomains": { "type": "array", "items": { "type": "string" } },
+    "maxActions": { "type": "integer", "minimum": 1, "default": 50 },
+    "captureFinalScreenshot": { "type": "boolean", "default": true },
+    "context": { "type": "object" },
+    "output": {
+      "type": "object",
+      "properties": {
+        "format": { "type": "string", "enum": ["json", "markdown", "html", "image"], "default": "json" }
+      }
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "goto",
+              "waitFor",
+              "click",
+              "fill",
+              "type",
+              "press",
+              "select",
+              "check",
+              "uncheck",
+              "extract",
+              "screenshot",
+              "evaluate"
+            ]
+          },
+          "url": { "type": "string", "format": "uri" },
+          "waitUntil": { "type": "string", "enum": ["load", "domcontentloaded", "networkidle", "commit"] },
+          "selector": {
+            "oneOf": [
+              { "type": "string" },
+              {
+                "type": "object",
+                "properties": {
+                  "role": { "type": "string" },
+                  "name": { "type": "string" },
+                  "exact": { "type": "boolean" },
+                  "testId": { "type": "string" },
+                  "css": { "type": "string" },
+                  "xpath": { "type": "string" },
+                  "text": { "type": "string" }
+                }
+              }
+            ]
+          },
+          "value": {},
+          "text": { "type": "string" },
+          "key": { "type": "string" },
+          "ms": { "type": "integer", "minimum": 0 },
+          "path": { "type": "string" },
+          "fullPage": { "type": "boolean" },
+          "fn": { "type": "string" },
+          "as": { "type": "string" },
+          "mode": { "type": "string", "enum": ["text", "html", "attr", "allText"] },
+          "attr": { "type": "string" },
+          "sideEffect": { "type": "boolean", "default": false },
+          "options": { "type": "object" }
+        }
+      }
+    }
+  }
+}
